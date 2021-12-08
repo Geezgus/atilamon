@@ -83,6 +83,9 @@ console.log(
 );
 
 /* Getting data from HTML & CSS */
+const bulbasaur = document.getElementById("player-1");
+const squirtle = document.getElementById("player-2");
+
 const player1 = new Pokemon("Bulbasaur", document.querySelector("#player1-hp"));
 const player2 = new Pokemon("Squirtle", document.querySelector("#player2-hp"));
 
@@ -131,25 +134,45 @@ function getRandomIntInclusive(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
+function runBulbasaurAnimation() {
+  bulbasaur.style.bottom = "-1%";
+  sleep(100).then(() => {
+    bulbasaur.style.bottom = "0";
+  });
+}
+
+function runSquirtleAnimation() {
+  squirtle.style.top = "21%";
+  sleep(100).then(() => {
+    squirtle.style.top = "20%";
+  });
+}
+
 function registerPokemonMove(callback: Function, target?: Pokemon) {
   let random = getRandomIntInclusive(1, 2);
 
   if (random === 1) {
     if (target) callback.call(player1, target);
     else callback.call(player1);
+    runBulbasaurAnimation();
 
     if (player2.hp <= 0) return;
     else {
-      sleep(lifebarTransitionDuration).then(() => player2.move(player1));
+      sleep(lifebarTransitionDuration).then(() => {
+        player2.move(player1);
+        runSquirtleAnimation();
+      });
     }
   } else {
     player2.move(player1);
+    runSquirtleAnimation();
 
     if (player1.hp <= 0) return;
     else {
       sleep(lifebarTransitionDuration).then(() => {
         if (target) callback.call(player1, target);
         else callback.call(player1);
+        runBulbasaurAnimation();
       });
     }
   }
