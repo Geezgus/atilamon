@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Atilamon</title>
+    <link rel="stylesheet" href="css/reset.css" />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+
+  <body>
+    <div id="game-vp" class="grid">
+      <div id="player2-hp" class="lifebar"></div>
+
+      <div id="game-scene">
+        <div class="players" id="player-1"></div>
+        <div class="players" id="player-2"></div>
+      </div>
+
+      <div id="player1-hp" class="lifebar"></div>
+
+      <!-- REMOVE MENU-1 -->
+      <!-- <div id="game-menu-1" class="grid">
+        <div id="message" class="menu-1 borders">
+          <h2>What will I do? &#x1F440;</h2>
+        </div>
+        <div id="fight-btn" class="menu-1 borders"><h2>Fight</h2></div>
+        <div id="bag-btn" class="menu-1 borders"><h2>Bag</h2></div>
+      </div> -->
+
+      <div id="game-menu-2" class="grid show-menu">
+        <button id="move-1" class="menu-2 borders"><h2>Attack</h2></button>
+        <button id="move-2" class="menu-2 borders"><h2>Heal</h2></button>
+      </div>
+    </div>
+
+    <audio controls autoplay loop muted>
+      <source
+        src="../sounds/Pokémon Fire Red & Pokémon Leaf Green - Gym Leader Battle.mp3"
+        type="audio/mpeg"
+      />
+      Your browser does not support the audio element.
+    </audio>
+
+    <script src="js/index.js"></script>
+  </body>
+</html>
+
+<!--
+  raise atk
+  raise dfs
+  normal atk
+  special atk (Type)
+-->

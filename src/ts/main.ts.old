@@ -1,0 +1,202 @@
+/* function GetRandomIntInclusive(min: number, max: number): number {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
+interface ISubject {
+  Register(observer: IObserver): void;
+  Unregister(observer: IObserver): void;
+}
+
+interface IObserver {
+  Update(caller: Player, action: string): void;
+}
+
+class Game implements IObserver {
+  private _player1: Player;
+  private _player2: Player;
+
+  constructor(player1: Player, player2: Player) {
+    this._player1 = player1;
+    this._player2 = player2;
+
+    this._player1.Register(this);
+    this._player2.Register(this);
+  }
+
+  Update(player: Player, action: string): void {
+    const foe = player === this._player1 ? this._player2 : this._player1;
+
+    switch (action) {
+      case "Attack":
+        foe.Lifebar.style.setProperty("--lifebar-width", foe.HealthPts + "%");
+        break;
+    }
+
+    if (foe.HealthPts <= 0) {
+      console.log(`Congratulations, ${player.Name}!`);
+      console.log(`Too bad you lose, ${foe.Name}.. :(`);
+    } else {
+      console.log(player.Name + " used " + action);
+      console.log("");
+    }
+  }
+
+  get Player1(): Player {
+    return this._player1;
+  }
+
+  get Player2(): Player {
+    return this._player2;
+  }
+}
+
+class Player implements ISubject {
+  private _name: string;
+  private _observers: IObserver[];
+  private _lifebar: HTMLElement;
+  private _healthPts: number;
+  private _attackPts: number;
+  private _defensePts: number;
+
+  constructor(lifebar: HTMLElement, name: string) {
+    this._name = name;
+    this._observers = [];
+    this._lifebar = lifebar;
+
+    this._healthPts = 100;
+    this._attackPts = 10;
+    this._defensePts = 0;
+  }
+
+  Register(registree: IObserver): void {
+    this._observers.push(registree);
+  }
+
+  Unregister(unregistree: IObserver): void {
+    this._observers = this._observers.filter(
+      (observer) => observer !== unregistree
+    );
+  }
+
+  Notify(action: string): void {
+    for (const observer of this._observers) {
+      observer.Update(this, action);
+    }
+  }
+
+  Attack(foe: Player) {
+    if (this._healthPts > 0) {
+      let random = GetRandomIntInclusive(1, 10);
+
+      switch (random) {
+        case 1:
+          foe.HealthPts -= this.AttackPts * 2 - foe.DefensePts;
+          break;
+
+        default:
+          foe.HealthPts -= this.AttackPts - foe.DefensePts;
+          break;
+      }
+      foe.DefensePts = 0;
+
+      this.Notify("Attack");
+    }
+  }
+
+  Heal() {
+    this.HealthPts += 15;
+
+    this.Notify("Heal");
+  }
+
+  MoveCOM(foe: Player) {
+    let probability = 100;
+    const move = GetRandomIntInclusive(1, probability);
+
+    if (this._healthPts < 50) {
+      move < probability / 5 ? this.Attack(foe) : this.Heal();
+    } else {
+      move < probability / 5 ? this.Heal() : this.Attack(foe);
+    }
+  }
+
+  get Lifebar(): HTMLElement {
+    return this._lifebar;
+  }
+
+  get HealthPts(): number {
+    return this._healthPts;
+  }
+  set HealthPts(healthPts: number) {
+    this._healthPts = healthPts;
+    if (this._healthPts >= 100) this._healthPts = 100;
+  }
+
+  get AttackPts(): number {
+    return this._attackPts;
+  }
+
+  get DefensePts(): number {
+    return this._defensePts;
+  }
+  set DefensePts(defensePts: number) {
+    this._defensePts = defensePts;
+  }
+
+  get Name(): string {
+    return this._name;
+  }
+}
+
+const game = new Game(
+  new Player(document.getElementById("player1-hp"), "Bulbasaur"),
+  new Player(document.getElementById("player2-hp"), "Squirtle")
+);
+
+const attack = document.getElementById("move-1");
+const heal = document.getElementById("move-2");
+
+attack.onclick = () => {
+  let random = GetRandomIntInclusive(1, 2);
+
+  switch (random) {
+    case 1:
+      game.Player1.Attack(game.Player2);
+      setTimeout(() => {
+        game.Player2.MoveCOM(game.Player1);
+      }, 100);
+
+      break;
+    case 2:
+      game.Player2.MoveCOM(game.Player1);
+      setTimeout(() => {
+        game.Player1.Attack(game.Player2);
+      }, 100);
+
+      break;
+  }
+};
+
+heal.onclick = () => {
+  let random = GetRandomIntInclusive(1, 2);
+
+  switch (random) {
+    case 1:
+      game.Player1.Heal();
+      setTimeout(() => {
+        game.Player2.MoveCOM(game.Player1);
+      }, 100);
+
+      break;
+    case 2:
+      game.Player2.MoveCOM(game.Player1);
+      setTimeout(() => {
+        game.Player1.Heal();
+      }, 100);
+
+      break;
+  }
+};
+ */

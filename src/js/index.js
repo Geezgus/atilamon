@@ -1,0 +1,130 @@
+/* Obj Definitions */
+class Pokemon {
+    constructor(name, lifebar) {
+        this._name = name;
+        this._hp = 100;
+        this._strength = 20;
+        this._lifebar = lifebar;
+    }
+    move(foe) {
+        let random = getRandomIntInclusive(1, 3);
+        if (this._hp > 50) {
+            random <= 2 ? this.attack(foe) : this.heal();
+        }
+        else {
+            random <= 2 ? this.heal() : this.attack(foe);
+        }
+    }
+    attack(foe) {
+        let random = getRandomIntInclusive(1, 10);
+        let critical = false;
+        if (random === 1) {
+            foe._hp -= this._strength * 2;
+            critical = true;
+        }
+        else {
+            foe._hp -= this._strength;
+        }
+        foe._lifebar.style.setProperty("--lifebar-width", foe._hp + "%");
+        console.log(this._name +
+            " just used " +
+            "attack" +
+            (critical ? " IT WAS CRITICAL!" : ""));
+        if (foe._hp <= 0) {
+            console.log("Congratulation! " + this._name + " won the battle!");
+            this._hp = 0;
+            Object.freeze(this);
+            Object.freeze(foe);
+        }
+    }
+    heal() {
+        this._hp += 25;
+        if (this._hp > 100)
+            this._hp = 100;
+        this._lifebar.style.setProperty("--lifebar-width", this._hp + "%");
+        console.log(this._name + " just used " + "heal");
+    }
+    get name() {
+        return this._name;
+    }
+    get hp() {
+        return this._hp;
+    }
+    get strength() {
+        return this._strength;
+    }
+    get lifebar() {
+        return this._lifebar;
+    }
+}
+/* Greetings */
+console.log("Greetings! Turn on the sound under the battle " +
+    "screen to make your experience even better!");
+/* Getting data from HTML & CSS */
+const player1 = new Pokemon("Bulbasaur", document.querySelector("#player1-hp"));
+const player2 = new Pokemon("Squirtle", document.querySelector("#player2-hp"));
+const btnAttack = document.getElementById("move-1");
+const btnHeal = document.getElementById("move-2");
+const buttons = [btnAttack, btnHeal];
+const lifebarTransitionDuration = parseInt(window
+    .getComputedStyle(document.documentElement)
+    .getPropertyValue("--lifebar-transition-duration"));
+/* Events */
+btnAttack.addEventListener("click", () => {
+    disableButtons();
+    registerPokemonMove(player1.attack, player2);
+    sleep(lifebarTransitionDuration * 2).then(() => enableButtons());
+});
+btnHeal.addEventListener("click", () => {
+    disableButtons();
+    registerPokemonMove(player1.heal);
+    sleep(lifebarTransitionDuration * 2).then(() => enableButtons());
+});
+/* Functions */
+function disableButtons() {
+    for (const button of buttons) {
+        button.disabled = true;
+        button.classList.add("disabled");
+    }
+}
+function enableButtons() {
+    for (const button of buttons) {
+        button.disabled = false;
+        button.classList.remove("disabled");
+    }
+}
+function getRandomIntInclusive(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1) + min);
+}
+function registerPokemonMove(callback, target) {
+    let random = getRandomIntInclusive(1, 2);
+    if (random === 1) {
+        if (target)
+            callback.call(player1, target);
+        else
+            callback.call(player1);
+        if (player2.hp <= 0)
+            return;
+        else {
+            sleep(lifebarTransitionDuration).then(() => player2.move(player1));
+        }
+    }
+    else {
+        player2.move(player1);
+        if (player1.hp <= 0)
+            return;
+        else {
+            sleep(lifebarTransitionDuration).then(() => {
+                if (target)
+                    callback.call(player1, target);
+                else
+                    callback.call(player1);
+            });
+        }
+    }
+}
+function sleep(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+}
